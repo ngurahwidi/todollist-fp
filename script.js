@@ -1,0 +1,72 @@
+const form = document.getElementById("todo-form");
+const input = document.getElementById("todo-input");
+const list = document.getElementById("todo-list");
+
+let todos = loadTodos();
+renderTodos(todos);
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = input.value.trim();
+  if (text !== "") {
+    const newTodo = createTodo(text);
+    todos.push(newTodo);
+    saveTodos(todos);
+    renderTodos(todos);
+    input.value = "";
+  }
+});
+
+function createTodo(text) {
+  return {
+    id: Date.now(),
+    text,
+    done: false,
+  };
+}
+
+function renderTodos(todoList) {
+  list.innerHTML = "";
+  todoList.forEach((todo) => {
+    const li = document.createElement("li");
+    li.textContent = todo.text;
+    if (todo.done) li.classList.add("done");
+
+    li.addEventListener("click", () => {
+      toggleDone(todo.id);
+    });
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "🗑";
+    deleteButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteTodo(todo.id);
+    });
+
+    li.appendChild(deleteButton);
+    list.appendChild(li);
+  });
+}
+
+function saveTodos(todoList) {
+  localStorage.setItem("todos", JSON.stringify(todoList));
+}
+
+function loadTodos() {
+  const data = localStorage.getItem("todos");
+  return data ? JSON.parse(data) : [];
+}
+
+function toggleDone(id) {
+  todos = todos.map((todo) =>
+    todo.id === id ? { ...todo, done: !todo.done } : todo
+  );
+  saveTodos(todos);
+  renderTodos(todos);
+}
+
+function deleteTodo(id) {
+  todos = todos.filter((todo) => todo.id !== id);
+  saveTodos(todos);
+  renderTodos(todos);
+}
