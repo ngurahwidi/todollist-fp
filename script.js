@@ -2,6 +2,7 @@ const form = document.getElementById("todo-form");
 const input = document.getElementById("todo-input");
 const list = document.getElementById("todo-list");
 
+let currentFilter = "all";
 let todos = loadTodos();
 renderTodos(todos);
 
@@ -25,9 +26,23 @@ function createTodo(text) {
   };
 }
 
+document.querySelectorAll(".filters button").forEach((button) => {
+  button.addEventListener("click", (e) => {
+    currentFilter = button.dataset.filter;
+    renderTodos(todos);
+  });
+});
+
 function renderTodos(todoList) {
   list.innerHTML = "";
-  todoList.forEach((todo) => {
+
+  const filtered = todoList.filter((todo) => {
+    if (currentFilter === "done") return todo.done;
+    if (currentFilter === "pending") return !todo.done;
+    return true;
+  });
+
+  filtered.forEach((todo) => {
     const li = document.createElement("li");
     li.textContent = todo.text;
     if (todo.done) li.classList.add("done");

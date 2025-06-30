@@ -37,6 +37,10 @@ button {
   border-radius: 10px;
 }
 
+button:hover {
+  opacity: 0.8;
+}
+
 ul {
   list-style: none;
   padding: 0;
@@ -55,4 +59,23 @@ li {
 li.done {
   text-decoration: line-through;
   color: gray;
+}
+
+.filters {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.filters button {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #222222;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.filters button:hover {
+  opacity: 0.8;
 }
