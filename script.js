@@ -15,12 +15,31 @@ async function init() {
 }
 init();
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = input.value.trim();
   if (text !== "") {
     const newTodo = createTodo(text);
-    todos.push(newTodo);
+
+    const response = await fetch("https://jsonplaceholder.typicode.com/todos", {
+      method: "POST",
+      body: JSON.stringify({
+        title: newTodo.text,
+        completed: newTodo.done,
+        userId: 1,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+
+    const result = await response.json();
+
+    todos.push({
+      ...newTodo,
+      id: result.id,
+    });
+
     saveTodos(todos);
     renderTodos(todos);
     input.value = "";
