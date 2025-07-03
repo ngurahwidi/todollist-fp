@@ -18,7 +18,7 @@ form.addEventListener("submit", (e) => {
   }
 });
 
-function fakeSereverResponse(data = null, delay = 1000) {
+function fakeSereverResponse(data = null, delay = 500) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(data);
