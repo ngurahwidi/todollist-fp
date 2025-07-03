@@ -81,7 +81,25 @@ li.done {
 }
 
 #loading {
+  display: none;
+  text-align: center;
   margin-top: 10px;
   font-weight: bold;
   color: #222222;
+}
+
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ccc;
+  border-top-color: #2a9962;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
