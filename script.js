@@ -1,3 +1,8 @@
+const pipe =
+  (...fns) =>
+  (input) =>
+    fns.reduce((acc, fn) => fn(acc), input);
+
 const form = document.getElementById("todo-form");
 const input = document.getElementById("todo-input");
 const list = document.getElementById("todo-list");
@@ -49,38 +54,44 @@ document.querySelectorAll(".filters button").forEach((button) => {
   });
 });
 
+const filterTodos = (todos) => {
+  if (currentFilter === "done") return todos.filter((todo) => todo.done);
+  if (currentFilter === "pending") return todos.filter((todo) => !todo.done);
+  return todos;
+};
+
+const clearList = () => {
+  list.innerHTML = "";
+  return null;
+};
+
+const renderItem = (todo) => {
+  const li = document.createElement("li");
+  li.textContent = todo.text;
+  if (todo.done) li.classList.add("done");
+
+  li.addEventListener("click", () => {
+    toggleDone(todo.id);
+  });
+
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "🗑";
+  deleteButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    deleteTodo(todo.id);
+  });
+
+  li.appendChild(deleteButton);
+  list.appendChild(li);
+};
+
+const renderList = (todos) => todos.forEach(renderItem);
+
 async function renderTodos(todoList) {
   showLoading();
-
   await fakeSereverResponse();
 
-  list.innerHTML = "";
-
-  const filtered = todoList.filter((todo) => {
-    if (currentFilter === "done") return todo.done;
-    if (currentFilter === "pending") return !todo.done;
-    return true;
-  });
-
-  filtered.forEach((todo) => {
-    const li = document.createElement("li");
-    li.textContent = todo.text;
-    if (todo.done) li.classList.add("done");
-
-    li.addEventListener("click", () => {
-      toggleDone(todo.id);
-    });
-
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "🗑";
-    deleteButton.addEventListener("click", (e) => {
-      e.stopPropagation();
-      deleteTodo(todo.id);
-    });
-
-    li.appendChild(deleteButton);
-    list.appendChild(li);
-  });
+  pipe(clearList, () => filterTodos(todoList), renderList)();
 
   hideLoading();
 }
