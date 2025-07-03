@@ -8,8 +8,12 @@ const input = document.getElementById("todo-input");
 const list = document.getElementById("todo-list");
 
 let currentFilter = "all";
-let todos = loadTodos();
-renderTodos(todos);
+
+async function init() {
+  todos = await loadTodos();
+  await renderTodos(todos);
+}
+init();
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -100,9 +104,16 @@ function saveTodos(todoList) {
   localStorage.setItem("todos", JSON.stringify(todoList));
 }
 
-function loadTodos() {
-  const data = localStorage.getItem("todos");
-  return data ? JSON.parse(data) : [];
+async function loadTodos() {
+  const res = await fetch(
+    "https://jsonplaceholder.typicode.com/todos?_limit=10"
+  );
+  const data = await res.json();
+  return data.map((todo) => ({
+    id: todo.id,
+    text: todo.title,
+    done: todo.completed,
+  }));
 }
 
 function toggleDone(id) {
