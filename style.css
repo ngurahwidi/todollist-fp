@@ -79,3 +79,9 @@ li.done {
 .filters button:hover {
   opacity: 0.8;
 }
+
+#loading {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #222222;
+}

@@ -18,6 +18,22 @@ form.addEventListener("submit", (e) => {
   }
 });
 
+function fakeSereverResponse(data = null, delay = 1000) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(data);
+    }, delay);
+  });
+}
+
+function showLoading() {
+  document.getElementById("loading").style.display = "block";
+}
+
+function hideLoading() {
+  document.getElementById("loading").style.display = "none";
+}
+
 function createTodo(text) {
   return {
     id: Date.now(),
@@ -33,7 +49,11 @@ document.querySelectorAll(".filters button").forEach((button) => {
   });
 });
 
-function renderTodos(todoList) {
+async function renderTodos(todoList) {
+  showLoading();
+
+  await fakeSereverResponse();
+
   list.innerHTML = "";
 
   const filtered = todoList.filter((todo) => {
@@ -61,6 +81,8 @@ function renderTodos(todoList) {
     li.appendChild(deleteButton);
     list.appendChild(li);
   });
+
+  hideLoading();
 }
 
 function saveTodos(todoList) {
